@@ -30,7 +30,7 @@
           </div>
         </a-card>
         <div class="search-container">
-          <a-input placeholder="请输入关键字" allow-clear>
+          <a-input v-model="searchKey" placeholder="请输入关键字" allow-clear>
             <template #prefix>
               <Icon name="icon-search" />
             </template>
@@ -46,9 +46,32 @@
           </div>
         </div>
         <div class="model-tree-container">
-          <a-tree :data="treeData">
+          <a-tree block-node :data="treeData">
             <template #switcher-icon="{ isLeaf }">
               <Icon v-if="!isLeaf" name="icon-down" />
+            </template>
+            <template #title="nodeData">
+              <template v-if="getMatchIndex(nodeData?.title) < 0">
+                {{ nodeData?.title }}
+              </template>
+              <template v-else>
+                <span>
+                  {{ nodeData?.title.slice(0, getMatchIndex(nodeData?.title)) }}
+                  <span style="color: var(--color-primary-light-4)">
+                    {{
+                      nodeData?.title.slice(
+                        getMatchIndex(nodeData?.title),
+                        getMatchIndex(nodeData?.title) + searchKey.length,
+                      )
+                    }}
+                  </span>
+                  {{
+                    nodeData?.title.slice(
+                      getMatchIndex(nodeData?.title) + searchKey.length,
+                    )
+                  }}
+                </span>
+              </template>
             </template>
           </a-tree>
         </div>
@@ -62,9 +85,12 @@
 
 <script setup lang="ts">
   import Icon from '@/components/icon/index.vue';
+  import { computed, ref } from 'vue';
   import SplitPanel from '../split-panel/index.vue';
 
-  const treeData = [
+  const searchKey = ref('');
+
+  const originTreeData = [
     {
       title: 'Trunk 0-0',
       key: '0-0',
@@ -96,6 +122,38 @@
       ],
     },
   ];
+
+  const searchData = (keyword: string) => {
+    const loop = (data) => {
+      const result = [];
+      data.forEach((item) => {
+        if (item.title.toLowerCase().indexOf(keyword.toLowerCase()) > -1) {
+          result.push({ ...item });
+        } else if (item.children) {
+          const filterData = loop(item.children);
+          if (filterData.length) {
+            result.push({
+              ...item,
+              children: filterData,
+            });
+          }
+        }
+      });
+      return result;
+    };
+
+    return loop(originTreeData);
+  };
+
+  const treeData = computed(() => {
+    if (!searchKey.value) return originTreeData;
+    return searchData(searchKey.value);
+  });
+
+  const getMatchIndex = (title: string) => {
+    if (!searchKey.value) return -1;
+    return title.toLowerCase().indexOf(searchKey.value.toLowerCase());
+  };
 </script>
 
 <style scoped lang="less">
@@ -133,5 +191,11 @@
   .model-tree-container {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
+
+    :deep(.arco-tree-node) {
+      &:hover {
+        background-color: var(--color-neutral-2);
+      }
+    }
   }
 </style>
