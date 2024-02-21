@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-export interface RuleMenuVo {
+export interface RuleMenu {
   id: number;
   projectId: number;
   menuName: string;
   menuType: string;
   chainName?: string;
   parentId?: number;
-  children?: RuleMenuVo[];
+  children?: RuleMenu[];
 }
 
 /**
@@ -15,7 +15,7 @@ export interface RuleMenuVo {
  * @param projectId
  */
 export function selectRuleMenuTree(projectId: number) {
-  return axios.get<RuleMenuVo[]>('/rule/menu/tree', {
+  return axios.get<RuleMenu[]>('/rule/menu/tree', {
     params: { projectId },
   });
 }
