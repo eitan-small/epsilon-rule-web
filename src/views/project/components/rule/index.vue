@@ -1,7 +1,7 @@
 <template>
   <SplitPanel>
     <template #left>
-      <div class="panel-wrapper">
+      <div class="left-wrapper">
         <a-card :bordered="false">
           <div
             :style="{
@@ -121,7 +121,20 @@
       </div>
     </template>
     <template #right>
-      <a-typography-paragraph>{{ treeData }}</a-typography-paragraph>
+      <div class="right-container">
+        <a-tabs
+          type="card"
+          :editable="true"
+          show-add-button
+          auto-switch
+          @add="handleAdd"
+          @delete="handleDelete"
+        >
+          <a-tab-pane v-for="item of data" :key="item.key" :title="item.title">
+            {{ item?.content }}
+          </a-tab-pane>
+        </a-tabs>
+      </div>
     </template>
   </SplitPanel>
 </template>
@@ -204,12 +217,57 @@
       );
     }
   };
+
+  let count = 5;
+  const data = ref([
+    {
+      key: '1',
+      title: 'Tab 1',
+      content: 'Content of Tab Panel 1',
+    },
+    {
+      key: '2',
+      title: 'Tab 2',
+      content: 'Content of Tab Panel 2',
+    },
+    {
+      key: '3',
+      title: 'Tab 3',
+      content: 'Content of Tab Panel 3',
+    },
+    {
+      key: '4',
+      title: 'Tab 4',
+      content: 'Content of Tab Panel 4',
+    },
+  ]);
+
+  const handleAdd = () => {
+    count += 1;
+    const number = count;
+    data.value = data.value.concat({
+      key: `${number}`,
+      title: `New Tab ${number}`,
+      content: `Content of New Tab Panel ${number}`,
+    });
+  };
+  const handleDelete = (key) => {
+    data.value = data.value.filter((item) => item.key !== key);
+  };
 </script>
 
 <style scoped lang="less">
-  .panel-wrapper {
+  .left-wrapper {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    background-color: var(--app-nav-bg);
+    border-right: 1px solid var(--color-neutral-2);
+    border-left: 1px solid var(--color-neutral-2);
+
+    :deep(.arco-card) {
+      background-color: var(--app-nav-bg);
+    }
   }
 
   .search-container {
@@ -220,7 +278,7 @@
     padding-left: 0.5rem;
 
     :deep(.arco-input-wrapper) {
-      border-radius: 0.5rem;
+      border-radius: var(--border-radius-medium);
     }
 
     :deep(.arco-input-focus) {
@@ -234,7 +292,7 @@
 
     :deep(.arco-btn) {
       background-color: var(--activate-tab-color);
-      border-radius: 0.5rem;
+      border-radius: var(--border-radius-medium);
     }
   }
 
@@ -274,6 +332,28 @@
 
     &:hover {
       background: var(--color-neutral-3);
+    }
+  }
+
+  .right-container {
+    :deep(.arco-tabs-nav) {
+      padding: 8px 8px 0;
+      background: var(--app-nav-bg);
+    }
+
+    :deep(.arco-tabs-content) {
+      border: none;
+    }
+
+    :deep(.arco-tabs-tab) {
+      border: none;
+      border-top-left-radius: var(--border-radius-medium);
+      border-top-right-radius: var(--border-radius-medium);
+    }
+
+    :deep(.arco-tabs-tab-active) {
+      border: 1px solid var(--color-neutral-3);
+      border-bottom-color: var(--color-bg-2);
     }
   }
 </style>
