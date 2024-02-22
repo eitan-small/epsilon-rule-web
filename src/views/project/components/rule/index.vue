@@ -123,6 +123,7 @@
     <template #right>
       <div class="right-container">
         <a-tabs
+          v-model:active-key="activeKey"
           type="card"
           :editable="true"
           show-add-button
@@ -130,8 +131,23 @@
           @add="handleAdd"
           @delete="handleDelete"
         >
-          <a-tab-pane v-for="item of data" :key="item.key" :title="item.title">
-            {{ item?.content }}
+          <a-tab-pane v-for="item of tabData" :key="item.id">
+            <template #title>
+              <a-typography-paragraph
+                :style="{
+                  margin: '0 0 0 5px',
+                  maxWidth: `100px`,
+                  minWidth: '100px',
+                }"
+                :ellipsis="{
+                  rows: 1,
+                  showTooltip: true,
+                }"
+              >
+                {{ item.menuName }}
+              </a-typography-paragraph>
+            </template>
+            {{ item }}
           </a-tab-pane>
         </a-tabs>
       </div>
@@ -148,18 +164,47 @@
   import SplitPanel from '../split-panel/index.vue';
 
   const route = useRoute();
-  const projectId = route.params.id as string;
+  const projectId = parseInt(route.params.id as string, 10);
 
   const searchKey = ref('');
   const treeRef = ref();
   const originTreeData = ref<RuleMenu[]>([]);
+  const activeKey = ref<number>();
+  const tabData = ref<RuleMenu[]>([]);
 
   const fetchData = async (id: number) => {
     const response = await selectRuleMenuTree(id);
     originTreeData.value = response.data;
   };
 
-  fetchData(parseInt(projectId, 10));
+  fetchData(projectId);
+
+  const addTag = (tag: RuleMenu) => {
+    // 判断标签是否已存在
+    const idExisting = tabData.value.find(
+      (existingTag) => existingTag.id === tag.id,
+    );
+
+    // 如果标签不存在，则添加
+    if (!idExisting) {
+      tabData.value.push(tag);
+    }
+    activeKey.value = tag.id;
+  };
+
+  const handleAdd = () => {
+    const tag = {
+      id: Date.now(),
+      projectId,
+      menuName: '新建规则',
+      // 表示新建接口，暂存未入库
+      menuType: '2',
+    } as RuleMenu;
+    addTag(tag);
+  };
+  const handleDelete = (key: number | string) => {
+    tabData.value = tabData.value.filter((item) => item.id !== key);
+  };
 
   const searchData = (keyword: string) => {
     const loop = (data: RuleMenu[]) => {
@@ -216,43 +261,9 @@
         !expandedNodes.includes(selectedKeys[0]),
       );
     }
-  };
-
-  let count = 5;
-  const data = ref([
-    {
-      key: '1',
-      title: 'Tab 1',
-      content: 'Content of Tab Panel 1',
-    },
-    {
-      key: '2',
-      title: 'Tab 2',
-      content: 'Content of Tab Panel 2',
-    },
-    {
-      key: '3',
-      title: 'Tab 3',
-      content: 'Content of Tab Panel 3',
-    },
-    {
-      key: '4',
-      title: 'Tab 4',
-      content: 'Content of Tab Panel 4',
-    },
-  ]);
-
-  const handleAdd = () => {
-    count += 1;
-    const number = count;
-    data.value = data.value.concat({
-      key: `${number}`,
-      title: `New Tab ${number}`,
-      content: `Content of New Tab Panel ${number}`,
-    });
-  };
-  const handleDelete = (key) => {
-    data.value = data.value.filter((item) => item.key !== key);
+    if (node.menuType === '2') {
+      addTag(node);
+    }
   };
 </script>
 
@@ -339,6 +350,10 @@
     :deep(.arco-tabs-nav) {
       padding: 8px 8px 0;
       background: var(--app-nav-bg);
+
+      &::before {
+        height: 0;
+      }
     }
 
     :deep(.arco-tabs-content) {
@@ -352,8 +367,9 @@
     }
 
     :deep(.arco-tabs-tab-active) {
+      background: var(--color-bg-1);
       border: 1px solid var(--color-neutral-3);
-      border-bottom-color: var(--color-bg-2);
+      border-bottom-color: var(--color-bg-1);
     }
   }
 </style>
