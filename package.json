@@ -28,6 +28,7 @@
     ]
   },
   "dependencies": {
+    "@antv/x6": "^2.18.1",
     "@arco-design/web-vue": "^2.52.0",
     "@vueuse/core": "^10.5.0",
     "axios": "^1.5.1",
