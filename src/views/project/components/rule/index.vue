@@ -147,8 +147,20 @@
                 {{ item.menuName }}
               </a-typography-paragraph>
             </template>
-            {{ item }}
+            <div class="rule-panel">
+              <RuleDetail :rule-menu="item" />
+            </div>
           </a-tab-pane>
+          <div class="rule-panel">
+            <a-empty
+              :style="{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                justifyContent: 'center',
+              }"
+            />
+          </div>
         </a-tabs>
       </div>
     </template>
@@ -162,6 +174,7 @@
   import { RuleMenu, selectRuleMenuTree } from '@/api/rule-menu';
   import { TreeNodeData } from '@arco-design/web-vue';
   import SplitPanel from '../split-panel/index.vue';
+  import RuleDetail from '../rule-detail/index.vue';
 
   const route = useRoute();
   const projectId = parseInt(route.params.id as string, 10);
@@ -198,7 +211,7 @@
       projectId,
       menuName: '新建规则',
       // 表示新建接口，暂存未入库
-      menuType: '2',
+      menuType: '0',
     } as RuleMenu;
     addTag(tag);
   };
@@ -357,6 +370,7 @@
     }
 
     :deep(.arco-tabs-content) {
+      padding: 0;
       border: none;
     }
 
@@ -371,5 +385,11 @@
       border: 1px solid var(--color-neutral-3);
       border-bottom-color: var(--color-bg-1);
     }
+  }
+
+  .rule-panel {
+    width: 100%;
+    height: calc(100vh - 40px);
+    overflow: auto;
   }
 </style>
