@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@antv/x6": "^2.18.1",
+    "@antv/x6-plugin-stencil": "^2.1.5",
     "@arco-design/web-vue": "^2.52.0",
     "@vueuse/core": "^10.5.0",
     "axios": "^1.5.1",

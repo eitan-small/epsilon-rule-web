@@ -1,10 +1,10 @@
 <template>
   <div class="rule-design">
-    <div v-show="showComponent" class="component-panel">
-      ComponentPanel11111
+    <div v-show="showStencil" class="stencil-container">
+      <div ref="stencilRef" class="app-stencil" />
     </div>
     <div class="graph-container">
-      <div ref="graphRef" class="graphRef" />
+      <div ref="graphRef" />
     </div>
   </div>
 </template>
@@ -13,93 +13,109 @@
   import { RuleMenu } from '@/api/rule-menu';
   import { Graph } from '@antv/x6';
   import { onMounted, ref } from 'vue';
+  import { Stencil } from '@antv/x6-plugin-stencil';
 
   interface Props {
     ruleMenu: RuleMenu;
-    showComponent?: boolean;
+    showStencil?: boolean;
   }
-
   withDefaults(defineProps<Props>(), {
-    showComponent: true,
+    showStencil: true,
   });
 
-  const graphRef = ref(null);
-  let graph;
+  const stencilRef = ref<HTMLElement | null>(null);
+  const graphRef = ref<HTMLElement | null>(null);
 
-  const data = {
-    nodes: [
-      {
-        id: 'node1',
-        shape: 'rect',
-        x: 40,
-        y: 40,
-        width: 100,
-        height: 40,
-        label: 'hello',
-        attrs: {
-          // body 是选择器名称，选中的是 rect 元素
-          body: {
-            stroke: '#8f8f8f',
-            strokeWidth: 1,
-            fill: '#fff',
-            rx: 6,
-            ry: 6,
-          },
-        },
-      },
-      {
-        id: 'node2',
-        shape: 'rect',
-        x: 160,
-        y: 180,
-        width: 100,
-        height: 40,
-        label: 'world',
-        attrs: {
-          body: {
-            stroke: '#8f8f8f',
-            strokeWidth: 1,
-            fill: '#fff',
-            rx: 6,
-            ry: 6,
-          },
-        },
-      },
-    ],
-    edges: [
-      {
-        shape: 'edge',
-        source: 'node1',
-        target: 'node2',
-        label: 'x6',
-        attrs: {
-          // line 是选择器名称，选中的边的 path 元素
-          line: {
-            stroke: '#8f8f8f',
-            strokeWidth: 1,
-          },
-        },
-      },
-    ],
-  };
+  let graph: Graph;
 
   const graphInit = () => {
     graph = new Graph({
-      container: graphRef.value,
-      width: graphRef.value.clientWidth,
-      height: graphRef.value.clientHeight,
+      container: graphRef.value!,
+      grid: true,
       background: {
-        color: 'var(--color-neutral-2)',
+        color: '#f5f5f5',
       },
+      autoResize: true,
     });
-
-    graph.fromJSON(data); // 渲染元素
-    graph.centerContent(); // 居中显示
   };
 
+  const stencilInit = () => {
+    const stencil = new Stencil({
+      title: '全部展开/收起',
+      target: graph,
+      search(cell, keyword) {
+        return cell.shape.indexOf(keyword) !== -1;
+      },
+      placeholder: '搜索',
+      notFoundText: '未找到匹配项',
+      collapsable: true,
+      layoutOptions: {
+        columns: 1,
+        center: false,
+        rowHeight: 50,
+      },
+      stencilGraphHeight: 0,
+      groups: [
+        {
+          name: 'basic',
+          title: '基本组件',
+        },
+        {
+          name: 'other',
+          title: '额外组件',
+        },
+      ],
+    });
+
+    stencilRef.value?.appendChild(stencil.container);
+
+    const commonAttrs = {
+      body: {
+        fill: '#fff',
+        stroke: '#8f8f8f',
+        strokeWidth: 1,
+      },
+    };
+
+    const n1 = graph.createNode({
+      shape: 'rect',
+      width: 180,
+      height: 40,
+      label: 'rect',
+      attrs: commonAttrs,
+    });
+
+    const n2 = graph.createNode({
+      shape: 'circle',
+      width: 40,
+      height: 40,
+      label: 'circle',
+      attrs: commonAttrs,
+    });
+
+    const n3 = graph.createNode({
+      shape: 'ellipse',
+      width: 80,
+      height: 40,
+      label: 'ellipse',
+      attrs: commonAttrs,
+    });
+
+    const n4 = graph.createNode({
+      shape: 'path',
+      width: 40,
+      height: 40,
+      path: 'M24.85,10.126c2.018-4.783,6.628-8.125,11.99-8.125c7.223,0,12.425,6.179,13.079,13.543c0,0,0.353,1.828-0.424,5.119c-1.058,4.482-3.545,8.464-6.898,11.503L24.85,48L7.402,32.165c-3.353-3.038-5.84-7.021-6.898-11.503c-0.777-3.291-0.424-5.119-0.424-5.119C0.734,8.179,5.936,2,13.159,2C18.522,2,22.832,5.343,24.85,10.126z',
+      attrs: commonAttrs,
+      label: 'path',
+    });
+
+    stencil.load([n1, n2], 'basic');
+    stencil.load([n3, n4], 'other');
+  };
   onMounted(() => {
-    console.log('aaa');
     graphInit();
+    stencilInit();
   });
 </script>
 
@@ -110,7 +126,8 @@
     padding: 8px 0;
   }
 
-  .component-panel {
+  .stencil-container {
+    display: flex;
     height: calc(100vh - 110px);
     background: var(--color-neutral-3);
   }
@@ -118,11 +135,12 @@
   .graph-container {
     width: 100%;
     height: calc(100vh - 110px);
-    overflow: hidden auto;
+    background: #8c78e6;
+  }
 
-    .graphRef {
-      width: 100%;
-      height: 100%;
-    }
+  .app-stencil {
+    position: relative;
+    width: 200px;
+    border: 1px solid #f0f0f0;
   }
 </style>
