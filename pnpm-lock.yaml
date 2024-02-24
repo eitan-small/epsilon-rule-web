@@ -11,6 +11,9 @@ dependencies:
   '@antv/x6-plugin-stencil':
     specifier: ^2.1.5
     version: 2.1.5(@antv/x6@2.18.1)
+  '@antv/x6-vue-shape':
+    specifier: ^2.1.2
+    version: 2.1.2(@antv/x6@2.18.1)(vue@3.3.4)
   '@arco-design/web-vue':
     specifier: ^2.52.0
     version: registry.npmmirror.com/@arco-design/web-vue@2.52.0(vue@3.3.4)
@@ -162,6 +165,21 @@ packages:
     dependencies:
       '@antv/x6': 2.18.1
       '@antv/x6-plugin-dnd': 2.1.1(@antv/x6@2.18.1)
+    dev: false
+
+  /@antv/x6-vue-shape@2.1.2(@antv/x6@2.18.1)(vue@3.3.4):
+    resolution: {integrity: sha512-lfLNJ2ztK8NP2JBAWTD6m5Wol0u6tOqj2KdOhWZoT8EtEw9rMmAdxsr8uTi9MRJO9pDMM0nbsR3cidnMh7VeDQ==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^2.0.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      '@antv/x6': 2.18.1
+      vue: registry.npmmirror.com/vue@3.3.4
+      vue-demi: 0.14.7(vue@3.3.4)
     dev: false
 
   /@antv/x6@2.18.1:
@@ -572,6 +590,21 @@ packages:
   /utility-types@3.11.0:
     resolution: {integrity: sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw==}
     engines: {node: '>= 4'}
+    dev: false
+
+  /vue-demi@0.14.7(vue@3.3.4):
+    resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: registry.npmmirror.com/vue@3.3.4
     dev: false
 
   /which@2.0.2:

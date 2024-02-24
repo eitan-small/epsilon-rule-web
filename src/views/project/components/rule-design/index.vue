@@ -14,6 +14,8 @@
   import { Graph } from '@antv/x6';
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
+  import { register } from '@antv/x6-vue-shape';
+  import StartNode from '../node/start-node/index.vue';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -36,6 +38,10 @@
         color: '#f5f5f5',
       },
       autoResize: true,
+      panning: {
+        enabled: true,
+        eventTypes: ['leftMouseDown', 'mouseWheel'],
+      },
     });
   };
 
@@ -78,11 +84,9 @@
     };
 
     const n1 = graph.createNode({
-      shape: 'rect',
-      width: 180,
+      shape: 'start-node',
+      width: 200,
       height: 40,
-      label: 'rect',
-      attrs: commonAttrs,
     });
 
     const n2 = graph.createNode({
@@ -113,7 +117,16 @@
     stencil.load([n1, n2], 'basic');
     stencil.load([n3, n4], 'other');
   };
+
+  const registerNode = () => {
+    register({
+      shape: 'start-node',
+      component: StartNode,
+    });
+  };
+
   onMounted(() => {
+    registerNode();
     graphInit();
     stencilInit();
   });
