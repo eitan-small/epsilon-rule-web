@@ -1,5 +1,5 @@
 <template>
-  <BasicNode label="开始节点" status="failed">
+  <BasicNode label="开始节点" status="default">
     <template #icon>
       <a-image width="20" :src="StartImage" :preview="false" />
     </template>

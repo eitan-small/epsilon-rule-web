@@ -1,8 +1,10 @@
 import { register } from '@antv/x6-vue-shape';
+import { PortManager } from '@antv/x6/src/model/port';
+
 import StartNode from '@/views/project/components/node/start-node/index.vue';
 import EndNode from '@/views/project/components/node/end-node/index.vue';
 import SwitchNode from '@/views/project/components/node/switch-node/index.vue';
-import { PortManager } from '@antv/x6/src/model/port';
+import CalculateNode from '@/views/project/components/node/calculate-node/index.vue';
 
 // 节点类型
 // eslint-disable-next-line no-shadow
@@ -10,6 +12,7 @@ enum NodeType {
   STARTNODE = 'start-node',
   ENDNODE = 'end-node',
   SWITCHNODE = 'switch-node',
+  CALCULATENODE = 'calculate-node',
 }
 
 const groups = {
@@ -74,6 +77,16 @@ const getPortsByType = (type: NodeType) => {
         },
       ];
       break;
+    case NodeType.CALCULATENODE:
+      ports.items = [
+        {
+          group: 'in',
+        },
+        {
+          group: 'out',
+        },
+      ];
+      break;
     default:
       break;
   }
@@ -96,6 +109,11 @@ const registerNode = () => {
     shape: NodeType.SWITCHNODE,
     component: SwitchNode,
     ports: getPortsByType(NodeType.SWITCHNODE),
+  });
+  register({
+    shape: NodeType.CALCULATENODE,
+    component: CalculateNode,
+    ports: getPortsByType(NodeType.CALCULATENODE),
   });
 };
 

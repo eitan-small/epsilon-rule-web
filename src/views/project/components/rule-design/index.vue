@@ -5,18 +5,20 @@
     </div>
     <div class="graph-container">
       <div ref="graphRef" />
+      <NodePanel />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { RuleMenu } from '@/api/rule-menu';
-  import { Graph, Platform } from '@antv/x6';
+  import { Graph } from '@antv/x6';
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
   import { Selection } from '@antv/x6-plugin-selection';
   import { registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
+  import NodePanel from '../node-panel/index.vue';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -122,25 +124,7 @@
       },
     };
 
-    const n1 = graph.createNode({
-      shape: 'start-node',
-      width: 180,
-      height: 40,
-    });
-
-    const n2 = graph.createNode({
-      shape: 'end-node',
-      width: 180,
-      height: 40,
-    });
-
-    const n3 = graph.createNode({
-      shape: 'switch-node',
-      width: 180,
-      height: 40,
-    });
-
-    const n4 = graph.createNode({
+    const n0 = graph.createNode({
       shape: 'path',
       width: 40,
       height: 40,
@@ -149,8 +133,32 @@
       label: 'path',
     });
 
-    stencil.load([n1, n2, n3], 'basic');
-    stencil.load([n4], 'other');
+    const startNode = graph.createNode({
+      shape: 'start-node',
+      width: 180,
+      height: 40,
+    });
+
+    const endNode = graph.createNode({
+      shape: 'end-node',
+      width: 180,
+      height: 40,
+    });
+
+    const switchNode = graph.createNode({
+      shape: 'switch-node',
+      width: 180,
+      height: 40,
+    });
+
+    const calculateNode = graph.createNode({
+      shape: 'calculate-node',
+      width: 180,
+      height: 40,
+    });
+
+    stencil.load([startNode, endNode, switchNode, calculateNode], 'basic');
+    stencil.load([n0], 'other');
   };
 
   const registerEvent = () => {
@@ -209,8 +217,10 @@
   }
 
   .graph-container {
+    position: relative;
     width: 100%;
     height: calc(100vh - 110px);
+    overflow: hidden;
     background: #8c78e6;
   }
 
