@@ -14,8 +14,18 @@
       {{ label }}
     </a-typography-text>
     <div class="node-status">
-      <a-image v-if="status === 'success'" :src="SuccessImage" width="24" />
-      <a-image v-else-if="status === 'failed'" :src="FailedImage" width="24" />
+      <a-image
+        v-if="status === 'success'"
+        :src="SuccessImage"
+        width="24"
+        :preview="false"
+      />
+      <a-image
+        v-else-if="status === 'failed'"
+        :src="FailedImage"
+        width="24"
+        :preview="false"
+      />
     </div>
   </div>
 </template>
@@ -58,6 +68,21 @@
     border-radius: var(--border-radius-medium);
   }
 
+  .x6-node-selected .epsilon-node {
+    border-color: #1890ff;
+    box-shadow: 0 0 0 4px #d4e8fe;
+
+    &.status-success {
+      border-color: #52c41a;
+      box-shadow: 0 0 0 4px #ccecc0;
+    }
+
+    &.status-failed {
+      border-color: #ff4d4f;
+      box-shadow: 0 0 0 4px #fedcdc;
+    }
+  }
+
   .node-left {
     width: 4px;
     height: 40px;
@@ -80,5 +105,17 @@
   .node-status {
     margin-right: 8px;
     margin-left: auto;
+  }
+</style>
+
+<style lang="less">
+  .x6-edge:hover path:nth-child(2) {
+    stroke: #1890ff;
+    stroke-width: 1px;
+  }
+
+  .x6-edge-selected path:nth-child(2) {
+    stroke: #1890ff;
+    stroke-width: 1.5px !important;
   }
 </style>

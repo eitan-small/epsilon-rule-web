@@ -11,11 +11,12 @@
 
 <script setup lang="ts">
   import { RuleMenu } from '@/api/rule-menu';
-  import { Graph } from '@antv/x6';
+  import { Graph, Platform } from '@antv/x6';
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
-  import { register } from '@antv/x6-vue-shape';
-  import StartNode from '../node/start-node/index.vue';
+  import { Selection } from '@antv/x6-plugin-selection';
+  import { registerNode } from '@/utils/node';
+  import { Keyboard } from '@antv/x6-plugin-keyboard';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -38,11 +39,49 @@
         color: '#f5f5f5',
       },
       autoResize: true,
-      panning: {
-        enabled: true,
-        eventTypes: ['leftMouseDown', 'mouseWheel'],
+      panning: true,
+      mousewheel: true,
+      connecting: {
+        snap: true,
+        allowBlank: false,
+        allowLoop: false,
+        allowNode: false,
+        allowMulti: false,
+        connector: 'smooth',
+        createEdge() {
+          return graph.createEdge({
+            attrs: {
+              line: {
+                stroke: 'var(--color-neutral-6)',
+                strokeWidth: 1,
+                targetMarker: {
+                  name: 'classic',
+                  size: 8,
+                },
+                zIndex: -1,
+              },
+            },
+          });
+        },
+        validateConnection({ sourceMagnet, targetMagnet }) {
+          return (
+            sourceMagnet?.getAttribute('port-group') === 'out' &&
+            targetMagnet?.getAttribute('port-group') === 'in'
+          );
+        },
       },
     });
+    graph.use(
+      new Selection({
+        enabled: true,
+        multiple: false,
+      }),
+    );
+    graph.use(
+      new Keyboard({
+        enabled: true,
+      }),
+    );
   };
 
   const stencilInit = () => {
@@ -85,24 +124,20 @@
 
     const n1 = graph.createNode({
       shape: 'start-node',
-      width: 200,
+      width: 180,
       height: 40,
     });
 
     const n2 = graph.createNode({
-      shape: 'circle',
-      width: 40,
+      shape: 'end-node',
+      width: 180,
       height: 40,
-      label: 'circle',
-      attrs: commonAttrs,
     });
 
     const n3 = graph.createNode({
-      shape: 'ellipse',
-      width: 80,
+      shape: 'switch-node',
+      width: 180,
       height: 40,
-      label: 'ellipse',
-      attrs: commonAttrs,
     });
 
     const n4 = graph.createNode({
@@ -114,20 +149,48 @@
       label: 'path',
     });
 
-    stencil.load([n1, n2], 'basic');
-    stencil.load([n3, n4], 'other');
+    stencil.load([n1, n2, n3], 'basic');
+    stencil.load([n4], 'other');
   };
 
-  const registerNode = () => {
-    register({
-      shape: 'start-node',
-      component: StartNode,
+  const registerEvent = () => {
+    graph.on('node:mouseenter', ({ node }) => {
+      // console.log(node);
+      const ports = node.getPorts();
+      ports.forEach((port) => {
+        node.portProp(port.id!, 'attrs/circle', {
+          fill: '#fff',
+          stroke: '#85A5FF',
+        });
+      });
+    });
+    graph.on('node:mouseleave', ({ node }) => {
+      // console.log(node);
+      const ports = node.getPorts();
+      ports.forEach((port) => {
+        node.portProp(port.id!, 'attrs/circle', {
+          fill: 'transparent',
+          stroke: 'transparent',
+        });
+      });
+    });
+    // 绑定Del键删除节点或边
+    graph.bindKey(['del'], () => {
+      const cells = graph.getSelectedCells();
+      if (cells.length) {
+        graph.removeCells(cells);
+      }
     });
   };
 
   onMounted(() => {
+    // 注册自定义节点
     registerNode();
+    // 初始化画布
     graphInit();
+    // 注册事件
+    registerEvent();
+    // 初始化 stencil
     stencilInit();
   });
 </script>

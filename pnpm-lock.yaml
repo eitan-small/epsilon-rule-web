@@ -8,6 +8,12 @@ dependencies:
   '@antv/x6':
     specifier: ^2.18.1
     version: 2.18.1
+  '@antv/x6-plugin-keyboard':
+    specifier: ^2.2.3
+    version: 2.2.3(@antv/x6@2.18.1)
+  '@antv/x6-plugin-selection':
+    specifier: ^2.2.2
+    version: 2.2.2(@antv/x6@2.18.1)
   '@antv/x6-plugin-stencil':
     specifier: ^2.1.5
     version: 2.1.5(@antv/x6@2.18.1)
@@ -152,6 +158,23 @@ packages:
 
   /@antv/x6-plugin-dnd@2.1.1(@antv/x6@2.18.1):
     resolution: {integrity: sha512-v0szzik1RkadPDn4Qi5mOSaB2AeI78D40/YuCYbPVzplG+HydGsHwO3MLTgJPQ+R5n0eM0W5F850p1VfTOHR7g==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': 2.18.1
+    dev: false
+
+  /@antv/x6-plugin-keyboard@2.2.3(@antv/x6@2.18.1):
+    resolution: {integrity: sha512-pnCIC+mDyKKfkcDyLePfGxKVIqXBcldTgannITkHC1kc0IafRS1GMvzpvuDGrM5haRYd6Nwz8kjkJyHkJE4GPA==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': 2.18.1
+      mousetrap: 1.6.5
+    dev: false
+
+  /@antv/x6-plugin-selection@2.2.2(@antv/x6@2.18.1):
+    resolution: {integrity: sha512-s2gtR9Onlhr7HOHqyqg0d+4sG76JCcQEbvrZZ64XmSChlvieIPlC3YtH4dg1KMNhYIuBmBmpSum6S0eVTEiPQw==}
     peerDependencies:
       '@antv/x6': ^2.x
     dependencies:
@@ -496,6 +519,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /mousetrap@1.6.5:
+    resolution: {integrity: sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==}
+    dev: false
 
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
