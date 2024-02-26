@@ -99,21 +99,37 @@ const registerNode = () => {
     shape: NodeType.STARTNODE,
     component: StartNode,
     ports: getPortsByType(NodeType.STARTNODE),
+    data: {
+      label: '开始节点',
+      status: 'success',
+    },
   });
   register({
     shape: NodeType.ENDNODE,
     component: EndNode,
     ports: getPortsByType(NodeType.ENDNODE),
+    data: {
+      label: '结束节点',
+      status: 'failed',
+    },
   });
   register({
     shape: NodeType.SWITCHNODE,
     component: SwitchNode,
     ports: getPortsByType(NodeType.SWITCHNODE),
+    data: {
+      label: '条件分支节点',
+      status: 'default',
+    },
   });
   register({
     shape: NodeType.CALCULATENODE,
     component: CalculateNode,
     ports: getPortsByType(NodeType.CALCULATENODE),
+    data: {
+      label: '赋值运算节点',
+      status: 'default',
+    },
   });
 };
 

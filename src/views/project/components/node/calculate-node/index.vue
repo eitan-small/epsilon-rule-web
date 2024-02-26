@@ -1,5 +1,5 @@
 <template>
-  <BasicNode label="运算赋值节点" status="default">
+  <BasicNode>
     <template #icon>
       <a-image width="20" :src="EditImage" :preview="false" />
     </template>

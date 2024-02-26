@@ -31,27 +31,37 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, defineProps } from 'vue';
+  import { computed, inject, onMounted, ref } from 'vue';
   import SuccessImage from '@/assets/images/success.png';
   import FailedImage from '@/assets/images/failed.png';
+  import { Node } from '@antv/x6';
 
-  interface Props {
-    status: 'default' | 'success' | 'failed';
-    label: string;
-  }
+  const label = ref<string>('');
+  const status = ref<'default' | 'success' | 'failed'>('default');
 
-  const props = withDefaults(defineProps<Props>(), {
-    status: 'default',
-  });
+  const getNode = inject<() => Node | undefined>('getNode', () => undefined);
 
   const statusClass = computed(() => {
-    switch (props.status) {
+    switch (status.value) {
       case 'success':
         return 'status-success';
       case 'failed':
         return 'status-failed';
       default:
         return 'status-default';
+    }
+  });
+
+  onMounted(() => {
+    const node: Node | undefined = getNode();
+    if (node) {
+      label.value = node.getData().label;
+      status.value = node.getData().status;
+      console.log(status.value);
+
+      node.on('change:data', ({ current }) => {
+        label.value = current.label;
+      });
     }
   });
 </script>
@@ -98,7 +108,7 @@
   }
 
   .label {
-    width: 90px;
+    width: 100px;
     margin: 0 8px;
   }
 

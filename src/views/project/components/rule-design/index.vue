@@ -5,7 +5,7 @@
     </div>
     <div class="graph-container">
       <div ref="graphRef" />
-      <NodePanel />
+      <NodePanel v-if="selectedNode" :selected-node="selectedNode" />
     </div>
   </div>
 </template>
@@ -30,6 +30,8 @@
 
   const stencilRef = ref<HTMLElement | null>(null);
   const graphRef = ref<HTMLElement | null>(null);
+
+  const selectedNode = ref();
 
   let graph: Graph;
 
@@ -181,6 +183,12 @@
           stroke: 'transparent',
         });
       });
+    });
+    graph.on('node:click', ({ node }) => {
+      selectedNode.value = node;
+    });
+    graph.on('blank:click', () => {
+      selectedNode.value = undefined;
     });
     // 绑定Del键删除节点或边
     graph.bindKey(['del'], () => {
