@@ -101,7 +101,7 @@ const registerNode = () => {
     ports: getPortsByType(NodeType.STARTNODE),
     data: {
       label: '开始节点',
-      status: 'success',
+      status: 'default',
     },
   });
   register({
@@ -110,7 +110,7 @@ const registerNode = () => {
     ports: getPortsByType(NodeType.ENDNODE),
     data: {
       label: '结束节点',
-      status: 'failed',
+      status: 'default',
     },
   });
   register({

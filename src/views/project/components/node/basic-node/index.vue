@@ -57,7 +57,6 @@
     if (node) {
       label.value = node.getData().label;
       status.value = node.getData().status;
-      console.log(status.value);
 
       node.on('change:data', ({ current }) => {
         label.value = current.label;

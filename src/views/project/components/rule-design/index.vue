@@ -6,6 +6,7 @@
     <div class="graph-container">
       <div ref="graphRef" />
       <NodePanel v-if="selectedNode" :selected-node="selectedNode" />
+      <RuleDesignTool :graph="graph" @save="handleSave" />
     </div>
   </div>
 </template>
@@ -19,6 +20,7 @@
   import { registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
   import NodePanel from '../node-panel/index.vue';
+  import RuleDesignTool from '../rule-design-tool/index.vue';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -165,7 +167,6 @@
 
   const registerEvent = () => {
     graph.on('node:mouseenter', ({ node }) => {
-      // console.log(node);
       const ports = node.getPorts();
       ports.forEach((port) => {
         node.portProp(port.id!, 'attrs/circle', {
@@ -175,7 +176,6 @@
       });
     });
     graph.on('node:mouseleave', ({ node }) => {
-      // console.log(node);
       const ports = node.getPorts();
       ports.forEach((port) => {
         node.portProp(port.id!, 'attrs/circle', {
@@ -197,6 +197,10 @@
         graph.removeCells(cells);
       }
     });
+  };
+
+  const handleSave = () => {
+    console.log(graph.toJSON());
   };
 
   onMounted(() => {
