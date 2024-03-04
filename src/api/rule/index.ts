@@ -27,4 +27,16 @@ function saveRuleGraph(epsilonGraph: EpsilonGraph) {
   return axios.post('/epsilon/rule/updateGraph', epsilonGraph);
 }
 
-export { EpsilonNode, EpsilonEdge, EpsilonGraph, saveRuleGraph };
+function selectRuleGraph(ruleId: number) {
+  return axios.get<EpsilonGraph>('/epsilon/rule/selectGraph', {
+    params: { ruleId },
+  });
+}
+
+export {
+  EpsilonNode,
+  EpsilonEdge,
+  EpsilonGraph,
+  saveRuleGraph,
+  selectRuleGraph,
+};

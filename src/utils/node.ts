@@ -5,6 +5,8 @@ import StartNode from '@/views/project/components/node/start-node/index.vue';
 import EndNode from '@/views/project/components/node/end-node/index.vue';
 import SwitchNode from '@/views/project/components/node/switch-node/index.vue';
 import CalculateNode from '@/views/project/components/node/calculate-node/index.vue';
+import { Graph } from '@antv/x6';
+import { EpsilonNode } from '@/api/rule';
 
 // 节点类型
 // eslint-disable-next-line no-shadow
@@ -94,6 +96,10 @@ const registerNode = () => {
   register({
     shape: NodeType.STARTNODE,
     component: StartNode,
+    size: {
+      width: 180,
+      height: 40,
+    },
     ports: {
       groups,
     },
@@ -105,6 +111,10 @@ const registerNode = () => {
   register({
     shape: NodeType.ENDNODE,
     component: EndNode,
+    size: {
+      width: 180,
+      height: 40,
+    },
     ports: {
       groups,
     },
@@ -116,6 +126,10 @@ const registerNode = () => {
   register({
     shape: NodeType.SWITCHNODE,
     component: SwitchNode,
+    size: {
+      width: 180,
+      height: 40,
+    },
     ports: {
       groups,
     },
@@ -127,6 +141,10 @@ const registerNode = () => {
   register({
     shape: NodeType.CALCULATENODE,
     component: CalculateNode,
+    size: {
+      width: 180,
+      height: 40,
+    },
     ports: {
       groups,
     },
@@ -137,4 +155,4 @@ const registerNode = () => {
   });
 };
 
-export { NodeType, registerNode, getPortsByType };
+export { NodeType, groups, registerNode, getPortsByType };

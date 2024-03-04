@@ -17,9 +17,9 @@
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
   import { Selection } from '@antv/x6-plugin-selection';
-  import { getPortsByType, NodeType, registerNode } from '@/utils/node';
+  import { getPortsByType, groups, NodeType, registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
-  import { EpsilonGraph, saveRuleGraph } from '@/api/rule';
+  import { EpsilonGraph, saveRuleGraph, selectRuleGraph } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
@@ -142,26 +142,18 @@
 
     const startNode = graph.createNode({
       shape: 'start-node',
-      width: 180,
-      height: 40,
     });
 
     const endNode = graph.createNode({
       shape: 'end-node',
-      width: 180,
-      height: 40,
     });
 
     const switchNode = graph.createNode({
       shape: 'switch-node',
-      width: 180,
-      height: 40,
     });
 
     const calculateNode = graph.createNode({
       shape: 'calculate-node',
-      width: 180,
-      height: 40,
     });
 
     stencil.load([startNode, endNode, switchNode, calculateNode], 'basic');
@@ -207,6 +199,48 @@
     });
   };
 
+  const ruleChainInit = async () => {
+    // 获取规则链信息
+    const response = await selectRuleGraph(props.ruleMenu.ruleId);
+    const epsilonGraph = response.data;
+    const nodes = epsilonGraph.nodes.map((node) => {
+      return {
+        id: node.nodeId,
+        shape: node.shape,
+        position: {
+          x: node.positionX,
+          y: node.positionY,
+        },
+        data: {
+          label: node.label,
+          status: 'default',
+          script: node.epsilonScript,
+        },
+      };
+    });
+    graph.addNodes(nodes);
+
+    const edges = epsilonGraph.edges.map((edge) => {
+      return {
+        id: edge.edgeId,
+        source: { cell: edge.sourceId, port: `${edge.sourceId}-out` },
+        target: { cell: edge.targetId, port: `${edge.targetId}-in` },
+        attrs: {
+          line: {
+            stroke: 'var(--color-neutral-6)',
+            strokeWidth: 1,
+            targetMarker: {
+              name: 'classic',
+              size: 8,
+            },
+            zIndex: -1,
+          },
+        },
+      };
+    });
+    graph.addEdges(edges);
+  };
+
   const handleSave = () => {
     const nodes = graph.getNodes().map((node) => {
       const position = node.getPosition();
@@ -233,7 +267,7 @@
       nodes,
       edges,
     };
-    saveRuleGraph(epsilonGraph).then((response) => {
+    saveRuleGraph(epsilonGraph).then(() => {
       Message.success('保存成功！');
     });
   };
@@ -247,6 +281,8 @@
     registerEvent();
     // 初始化 stencil
     stencilInit();
+    // 初始化规则图
+    ruleChainInit();
   });
 </script>
 
