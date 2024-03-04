@@ -5,7 +5,7 @@ export interface RuleMenu {
   projectId: number;
   menuName: string;
   menuType: string;
-  chainName?: string;
+  ruleId: number;
   parentId?: number;
   children?: RuleMenu[];
 }

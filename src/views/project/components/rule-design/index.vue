@@ -17,8 +17,10 @@
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
   import { Selection } from '@antv/x6-plugin-selection';
-  import { registerNode } from '@/utils/node';
+  import { getPortsByType, NodeType, registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
+  import { EpsilonGraph, saveRuleGraph } from '@/api/rule';
+  import { Message } from '@arco-design/web-vue';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
 
@@ -26,7 +28,8 @@
     ruleMenu: RuleMenu;
     showStencil?: boolean;
   }
-  withDefaults(defineProps<Props>(), {
+
+  const props = withDefaults(defineProps<Props>(), {
     showStencil: true,
   });
 
@@ -166,6 +169,11 @@
   };
 
   const registerEvent = () => {
+    // 新增 node 时动态添加 port
+    graph.on('node:added', ({ node }) => {
+      node.addPorts(getPortsByType(node.shape as NodeType, node.id));
+    });
+    // 鼠标移入后显示 port
     graph.on('node:mouseenter', ({ node }) => {
       const ports = node.getPorts();
       ports.forEach((port) => {
@@ -200,7 +208,34 @@
   };
 
   const handleSave = () => {
-    console.log(graph.toJSON());
+    const nodes = graph.getNodes().map((node) => {
+      const position = node.getPosition();
+      return {
+        nodeId: node.id,
+        ruleId: props.ruleMenu.ruleId,
+        shape: node.shape,
+        label: node.getData().label,
+        positionX: position.x,
+        positionY: position.y,
+        epsilonScript: node.getData().script,
+      };
+    });
+    const edges = graph.getEdges().map((edge) => {
+      return {
+        edgeId: edge.id,
+        ruleId: props.ruleMenu.ruleId,
+        sourceId: edge.getSourceCellId(),
+        targetId: edge.getTargetCellId(),
+      };
+    });
+    const epsilonGraph: EpsilonGraph = {
+      ruleId: props.ruleMenu.ruleId,
+      nodes,
+      edges,
+    };
+    saveRuleGraph(epsilonGraph).then((response) => {
+      Message.success('保存成功！');
+    });
   };
 
   onMounted(() => {

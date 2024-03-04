@@ -48,46 +48,42 @@ const groups = {
   },
 };
 
-const getPortsByType = (type: NodeType) => {
-  const ports: Partial<PortManager.Metadata> | PortManager.PortMetadata[] = {};
-  ports.groups = groups;
+/**
+ * 根据节点类型获取 ports
+ * @param type    节点类型
+ * @param nodeId  节点 id
+ */
+const getPortsByType = (type: NodeType, nodeId: string) => {
+  let ports: PortManager.PortMetadata[] = [];
 
   switch (type) {
     case NodeType.STARTNODE:
-      ports.items = [
+      ports = [
         {
+          id: `${nodeId}-out`,
           group: 'out',
         },
       ];
       break;
     case NodeType.ENDNODE:
-      ports.items = [
+      ports = [
         {
+          id: `${nodeId}-in`,
           group: 'in',
-        },
-      ];
-      break;
-    case NodeType.SWITCHNODE:
-      ports.items = [
-        {
-          group: 'in',
-        },
-        {
-          group: 'out',
-        },
-      ];
-      break;
-    case NodeType.CALCULATENODE:
-      ports.items = [
-        {
-          group: 'in',
-        },
-        {
-          group: 'out',
         },
       ];
       break;
     default:
+      ports = [
+        {
+          id: `${nodeId}-in`,
+          group: 'in',
+        },
+        {
+          id: `${nodeId}-out`,
+          group: 'out',
+        },
+      ];
       break;
   }
 
@@ -98,7 +94,9 @@ const registerNode = () => {
   register({
     shape: NodeType.STARTNODE,
     component: StartNode,
-    ports: getPortsByType(NodeType.STARTNODE),
+    ports: {
+      groups,
+    },
     data: {
       label: '开始节点',
       status: 'default',
@@ -107,7 +105,9 @@ const registerNode = () => {
   register({
     shape: NodeType.ENDNODE,
     component: EndNode,
-    ports: getPortsByType(NodeType.ENDNODE),
+    ports: {
+      groups,
+    },
     data: {
       label: '结束节点',
       status: 'default',
@@ -116,7 +116,9 @@ const registerNode = () => {
   register({
     shape: NodeType.SWITCHNODE,
     component: SwitchNode,
-    ports: getPortsByType(NodeType.SWITCHNODE),
+    ports: {
+      groups,
+    },
     data: {
       label: '条件分支节点',
       status: 'default',
@@ -125,7 +127,9 @@ const registerNode = () => {
   register({
     shape: NodeType.CALCULATENODE,
     component: CalculateNode,
-    ports: getPortsByType(NodeType.CALCULATENODE),
+    ports: {
+      groups,
+    },
     data: {
       label: '赋值运算节点',
       status: 'default',
@@ -133,4 +137,4 @@ const registerNode = () => {
   });
 };
 
-export { NodeType, registerNode };
+export { NodeType, registerNode, getPortsByType };
