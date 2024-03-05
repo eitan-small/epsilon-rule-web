@@ -21,6 +21,7 @@
   import { Keyboard } from '@antv/x6-plugin-keyboard';
   import { EpsilonGraph, saveRuleGraph, selectRuleGraph } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
+  import { v4 as uuid } from 'uuid';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
 
@@ -38,8 +39,9 @@
 
   const selectedNode = ref();
 
-  let graph: Graph;
+  const generateUUID = () => uuid().replace(/-/g, '');
 
+  let graph: Graph;
   const graphInit = () => {
     graph = new Graph({
       container: graphRef.value!,
@@ -59,6 +61,7 @@
         connector: 'smooth',
         createEdge() {
           return graph.createEdge({
+            id: generateUUID(),
             attrs: {
               line: {
                 stroke: 'var(--color-neutral-6)',
@@ -119,6 +122,17 @@
           title: '额外组件',
         },
       ],
+      getDragNode: (node) => {
+        return graph.createNode({
+          id: generateUUID(),
+          shape: node.shape,
+        });
+      },
+      getDropNode: (node) => {
+        const a = node.clone({ keepId: true });
+        console.log(a);
+        return a;
+      },
     });
 
     stencilRef.value?.appendChild(stencil.container);
