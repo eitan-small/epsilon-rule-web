@@ -5,8 +5,6 @@ import StartNode from '@/views/project/components/node/start-node/index.vue';
 import EndNode from '@/views/project/components/node/end-node/index.vue';
 import SwitchNode from '@/views/project/components/node/switch-node/index.vue';
 import CalculateNode from '@/views/project/components/node/calculate-node/index.vue';
-import { Graph } from '@antv/x6';
-import { EpsilonNode } from '@/api/rule';
 
 // 节点类型
 // eslint-disable-next-line no-shadow

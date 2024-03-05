@@ -33,10 +33,19 @@ function selectRuleGraph(ruleId: number) {
   });
 }
 
+interface EpsilonRule {
+  ruleId: number;
+  chainName: string;
+  ruleDesc: string;
+  enable: boolean;
+  validated: boolean;
+}
+
 export {
   EpsilonNode,
   EpsilonEdge,
   EpsilonGraph,
   saveRuleGraph,
   selectRuleGraph,
+  EpsilonRule,
 };

@@ -4,7 +4,9 @@
       <a-tab-pane key="1" title="决策配置">
         <RuleDesign :rule-menu="ruleMenu" />
       </a-tab-pane>
-      <a-tab-pane key="2" title="基本信息"> {{ ruleMenu }} </a-tab-pane>
+      <a-tab-pane key="2" title="基本信息">
+        <RuleBasic :rule-menu="ruleMenu" />
+      </a-tab-pane>
       <a-tab-pane key="3" title="调用示例"> Content of Tab Panel 3</a-tab-pane>
       <a-tab-pane key="4" title="执行日志"> Content of Tab Panel 4</a-tab-pane>
       <a-tab-pane key="5" title="指标统计"> Content of Tab Panel 5</a-tab-pane>
@@ -15,6 +17,7 @@
 <script setup lang="ts">
   import { RuleMenu } from '@/api/rule-menu';
   import RuleDesign from '../rule-design/index.vue';
+  import RuleBasic from '../rule-basic/index.vue';
 
   interface Props {
     ruleMenu: RuleMenu;

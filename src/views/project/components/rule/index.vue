@@ -217,6 +217,10 @@
   };
   const handleDelete = (key: number | string) => {
     tabData.value = tabData.value.filter((item) => item.id !== key);
+
+    if (activeKey.value === key && tabData.value.length > 0) {
+      activeKey.value = tabData.value[0].id;
+    }
   };
 
   const searchData = (keyword: string) => {

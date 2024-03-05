@@ -17,7 +17,7 @@
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
   import { Selection } from '@antv/x6-plugin-selection';
-  import { getPortsByType, groups, NodeType, registerNode } from '@/utils/node';
+  import { getPortsByType, NodeType, registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
   import { EpsilonGraph, saveRuleGraph, selectRuleGraph } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
@@ -200,6 +200,10 @@
   };
 
   const ruleChainInit = async () => {
+    if (!props.ruleMenu.ruleId) {
+      return;
+    }
+
     // 获取规则链信息
     const response = await selectRuleGraph(props.ruleMenu.ruleId);
     const epsilonGraph = response.data;
