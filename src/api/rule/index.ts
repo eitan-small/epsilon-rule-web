@@ -35,10 +35,17 @@ function selectRuleGraph(ruleId: number) {
 
 interface EpsilonRule {
   ruleId: number;
+  menuName: string;
   chainName: string;
   ruleDesc: string;
   enable: boolean;
   validated: boolean;
+}
+
+function selectRule(ruleId: number) {
+  return axios.get<EpsilonRule>('/epsilon/rule/select', {
+    params: { ruleId },
+  });
 }
 
 export {
@@ -48,4 +55,5 @@ export {
   saveRuleGraph,
   selectRuleGraph,
   EpsilonRule,
+  selectRule,
 };

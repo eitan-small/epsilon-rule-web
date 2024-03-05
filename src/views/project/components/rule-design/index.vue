@@ -21,7 +21,7 @@
   import { Keyboard } from '@antv/x6-plugin-keyboard';
   import { EpsilonGraph, saveRuleGraph, selectRuleGraph } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
-  import { v4 as uuid } from 'uuid';
+  import { generateUUID } from '@/utils/common';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
 
@@ -38,8 +38,6 @@
   const graphRef = ref<HTMLElement | null>(null);
 
   const selectedNode = ref();
-
-  const generateUUID = () => uuid().replace(/-/g, '');
 
   let graph: Graph;
   const graphInit = () => {

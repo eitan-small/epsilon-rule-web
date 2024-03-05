@@ -1,255 +1,94 @@
 <template>
   <div class="rule-basic">
     <a-form
-      ref="formRef"
       size="large"
       :model="form"
       :style="{ width: '600px' }"
       @submit="handleSubmit"
     >
       <a-form-item
-        field="name"
-        label="Username"
-        :rules="[
-          { required: true, message: 'name is required' },
-          { minLength: 5, message: 'must be greater than 5 characters' },
-        ]"
-        :validate-trigger="['change', 'input']"
+        field="menuName"
+        label="规则名称"
+        :rules="[{ required: true, message: '规则名称不能为空' }]"
       >
-        <a-input
-          v-model="form.name"
-          placeholder="please enter your username..."
-        />
+        <a-input v-model="form.menuName" />
       </a-form-item>
-      <a-form-item
-        field="age"
-        label="Age"
-        :rules="[
-          { required: true, message: 'age is required' },
-          { type: 'number', max: 200, message: 'age is max than 200' },
-        ]"
-      >
-        <a-input-number
-          v-model="form.age"
-          placeholder="please enter your age..."
-        />
+      <a-form-item field="chainName" label="规则名称">
+        <a-typography-text copyable>{{ form.chainName }}</a-typography-text>
       </a-form-item>
-      <a-form-item
-        field="section"
-        label="Section"
-        :rules="[{ match: /section one/, message: 'must select one' }]"
-      >
-        <a-select
-          v-model="form.section"
-          placeholder="Please select ..."
+      <a-form-item field="ruleDesc" label="规则描述">
+        <a-textarea
+          v-model="form.ruleDesc"
+          placeholder="请输入规则描述"
+          :max-length="80"
           allow-clear
-        >
-          <a-option value="section one">Section One</a-option>
-          <a-option value="section two">Section Two</a-option>
-          <a-option value="section three">Section Three</a-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        field="province"
-        label="Province"
-        :rules="[{ required: true, message: 'province is required' }]"
-      >
-        <a-cascader
-          v-model="form.province"
-          :options="options"
-          placeholder="Please select ..."
-          allow-clear
+          show-word-limit
         />
       </a-form-item>
+      <a-form-item field="validated" label="校验状态">
+        <a-typography-text v-if="form.validated" type="success">
+          校验成功
+        </a-typography-text>
+        <a-typography-text v-else type="danger"> 未校验 </a-typography-text>
+      </a-form-item>
       <a-form-item
-        field="options"
-        label="Options"
+        field="enable"
+        label="启用状态"
         :rules="[
           {
-            type: 'array',
-            minLength: 2,
-            message: 'must select greater than two options',
+            validator: (value, cb) => {
+              value && !form.validated ? cb('未校验的规则不能启用') : cb();
+            },
           },
         ]"
       >
-        <a-checkbox-group v-model="form.options">
-          <a-checkbox value="option one">Section One</a-checkbox>
-          <a-checkbox value="option two">Option Two</a-checkbox>
-          <a-checkbox value="option three">Option Three</a-checkbox>
-          <a-checkbox value="option four">Option Four</a-checkbox>
-        </a-checkbox-group>
-      </a-form-item>
-      <a-form-item field="date" label="Date">
-        <a-date-picker v-model="form.date" placeholder="Please select ..." />
-      </a-form-item>
-      <a-form-item field="time" label="Time">
-        <a-time-picker v-model="form.time" placeholder="Please select ..." />
-      </a-form-item>
-      <a-form-item
-        field="radio"
-        label="Radio"
-        :rules="[{ match: /one/, message: 'must select one' }]"
-      >
-        <a-radio-group v-model="form.radio">
-          <a-radio value="radio one">Radio One</a-radio>
-          <a-radio value="radio two">Radio Two</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item
-        field="slider"
-        label="Slider"
-        :rules="[{ type: 'number', min: 5, message: 'slider is min than 5' }]"
-      >
-        <a-slider v-model="form.slider" :max="10" />
-      </a-form-item>
-      <a-form-item field="score" label="Score">
-        <a-rate v-model="form.score" allow-clear />
-      </a-form-item>
-      <a-form-item
-        field="switch"
-        label="Switch"
-        :rules="[{ type: 'boolean', true: true, message: 'must be true' }]"
-      >
-        <a-switch v-model="form.switch" />
-      </a-form-item>
-      <a-form-item field="multiSelect" label="Multiple Select">
-        <a-select
-          v-model="form.multiSelect"
-          placeholder="Please select ..."
-          multiple
-        >
-          <a-option value="section one">Section One</a-option>
-          <a-option value="section two">Section Two</a-option>
-          <a-option value="section three">Section Three</a-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item field="treeSelect" label="Tree Select">
-        <a-tree-select
-          v-model="form.treeSelect"
-          :data="treeData"
-          placeholder="Please select ..."
-        />
+        <a-switch v-model="form.enable" />
       </a-form-item>
       <a-form-item>
-        <a-space>
-          <a-button html-type="submit">Submit</a-button>
-        </a-space>
+        <div class="button-wrapper">
+          <a-button html-type="submit" type="primary">保存</a-button>
+        </div>
       </a-form-item>
     </a-form>
-    {{ form }}
   </div>
 </template>
 
 <script setup lang="ts">
-  import { onMounted, reactive } from 'vue';
+  import { computed, onMounted, ref } from 'vue';
   import { RuleMenu } from '@/api/rule-menu';
+  import { EpsilonRule, selectRule } from '@/api/rule';
+  import { generateUUID } from '@/utils/common';
 
   interface Props {
     ruleMenu: RuleMenu;
   }
 
   const props = defineProps<Props>();
+  const form = ref<EpsilonRule>({
+    ruleId: props.ruleMenu.ruleId,
+    menuName: props.ruleMenu.menuName,
+    chainName: generateUUID(),
+    ruleDesc: '',
+    enable: false,
+    validated: false,
+  });
+  const status = computed(() =>
+    !form.value.validated && form.value.enable ? 'error' : 'success',
+  );
 
-  const fetchData = () => {
-    console.log('fetchData');
+  const fetchData = async () => {
+    if (!props.ruleMenu.ruleId) return;
+    const resp = await selectRule(props.ruleMenu.ruleId);
+    form.value = resp.data;
+  };
+
+  const handleSubmit = ({ values, errors }) => {
+    console.log('values:', values, '\nerrors:', errors);
   };
 
   onMounted(() => {
     fetchData();
   });
-
-  const form = reactive({
-    size: 'medium',
-    name: '',
-    age: undefined,
-    section: '',
-    province: 'haidian',
-    options: [],
-    date: '',
-    time: '',
-    radio: 'radio one',
-    slider: 5,
-    score: 5,
-    switch: false,
-    multiSelect: ['section one'],
-    treeSelect: '',
-  });
-  const options = [
-    {
-      value: 'beijing',
-      label: 'Beijing',
-      children: [
-        {
-          value: 'chaoyang',
-          label: 'ChaoYang',
-          children: [
-            {
-              value: 'datunli',
-              label: 'Datunli',
-            },
-          ],
-        },
-        {
-          value: 'haidian',
-          label: 'Haidian',
-        },
-        {
-          value: 'dongcheng',
-          label: 'Dongcheng',
-        },
-        {
-          value: 'xicheng',
-          label: 'XiCheng',
-        },
-      ],
-    },
-    {
-      value: 'shanghai',
-      label: 'Shanghai',
-      children: [
-        {
-          value: 'shanghaishi',
-          label: 'Shanghai',
-          children: [
-            {
-              value: 'huangpu',
-              label: 'Huangpu',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-  const treeData = [
-    {
-      key: 'node1',
-      title: 'Node1',
-      children: [
-        {
-          key: 'node2',
-          title: 'Node2',
-        },
-      ],
-    },
-    {
-      key: 'node3',
-      title: 'Node3',
-      children: [
-        {
-          key: 'node4',
-          title: 'Node4',
-        },
-        {
-          key: 'node5',
-          title: 'Node5',
-        },
-      ],
-    },
-  ];
-
-  const handleSubmit = () => {
-    console.log('aaa');
-  };
 </script>
 
 <style scoped lang="less">
@@ -257,5 +96,11 @@
     height: calc(100vh - 110px);
     padding: 20px;
     overflow: auto;
+  }
+
+  .button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
   }
 </style>
