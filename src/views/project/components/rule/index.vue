@@ -169,7 +169,7 @@
 
 <script setup lang="ts">
   import Icon from '@/components/icon/index.vue';
-  import { computed, ref } from 'vue';
+  import { computed, provide, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { RuleMenu, selectRuleMenuTree } from '@/api/rule-menu';
   import { TreeNodeData } from '@arco-design/web-vue';
@@ -210,8 +210,6 @@
       id: Date.now(),
       projectId,
       menuName: '新建规则',
-      // 表示新建接口，暂存未入库
-      menuType: '0',
     } as RuleMenu;
     addTag(tag);
   };
@@ -282,6 +280,21 @@
       addTag(node);
     }
   };
+
+  const refreshActiveTab = (ruleMenu: RuleMenu) => {
+    const tabIndex = tabData.value.findIndex(
+      (tab) => tab.id === activeKey.value,
+    );
+    if (tabIndex !== -1) {
+      tabData.value[tabIndex] = ruleMenu;
+      activeKey.value = ruleMenu.id;
+    }
+  };
+
+  provide('refreshMenu', (ruleMenu: RuleMenu) => {
+    fetchData(projectId);
+    refreshActiveTab(ruleMenu);
+  });
 </script>
 
 <style scoped lang="less">

@@ -13,7 +13,7 @@
       >
         <a-input v-model="form.menuName" />
       </a-form-item>
-      <a-form-item field="chainName" label="规则名称">
+      <a-form-item field="chainName" label="规则编号">
         <a-typography-text copyable>{{ form.chainName }}</a-typography-text>
       </a-form-item>
       <a-form-item field="ruleDesc" label="规则描述">
@@ -50,14 +50,16 @@
         </div>
       </a-form-item>
     </a-form>
+    {{ form }}
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue';
+  import { computed, inject, onMounted, ref } from 'vue';
   import { RuleMenu } from '@/api/rule-menu';
-  import { EpsilonRule, selectRule } from '@/api/rule';
+  import { EpsilonRule, saveOrUpdate, selectRule } from '@/api/rule';
   import { generateUUID } from '@/utils/common';
+  import { Message } from '@arco-design/web-vue';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -66,15 +68,15 @@
   const props = defineProps<Props>();
   const form = ref<EpsilonRule>({
     ruleId: props.ruleMenu.ruleId,
+    projectId: props.ruleMenu.projectId,
     menuName: props.ruleMenu.menuName,
     chainName: generateUUID(),
     ruleDesc: '',
     enable: false,
     validated: false,
   });
-  const status = computed(() =>
-    !form.value.validated && form.value.enable ? 'error' : 'success',
-  );
+
+  const refreshMenu = inject<(ruleMenu: RuleMenu) => void>('refreshMenu');
 
   const fetchData = async () => {
     if (!props.ruleMenu.ruleId) return;
@@ -82,8 +84,24 @@
     form.value = resp.data;
   };
 
-  const handleSubmit = ({ values, errors }) => {
-    console.log('values:', values, '\nerrors:', errors);
+  const handleSubmit = ({
+    values,
+    errors,
+  }: {
+    values: EpsilonRule;
+    errors: Record<string, any> | undefined;
+  }) => {
+    if (errors) {
+      Message.warning('请按照提示填写完整！');
+      return;
+    }
+    saveOrUpdate(values).then((resp) => {
+      form.value.ruleId = resp.data.ruleId;
+      Message.success('保存成功！');
+      if (refreshMenu) {
+        refreshMenu(resp.data);
+      }
+    });
   };
 
   onMounted(() => {
