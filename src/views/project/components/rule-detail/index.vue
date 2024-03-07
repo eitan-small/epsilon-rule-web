@@ -1,6 +1,6 @@
 <template>
   <div id="detail-container">
-    <a-tabs default-active-key="2">
+    <a-tabs default-active-key="2" destroy-on-hide>
       <a-tab-pane key="1" title="决策配置">
         <RuleDesign :rule-menu="ruleMenu" />
       </a-tab-pane>

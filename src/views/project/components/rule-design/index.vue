@@ -6,7 +6,11 @@
     <div class="graph-container">
       <div ref="graphRef" />
       <NodePanel v-if="selectedNode" :selected-node="selectedNode" />
-      <RuleDesignTool :graph="graph" @save="handleSave" />
+      <RuleDesignTool
+        :graph="graph"
+        @save="handleSave"
+        @validate="handleValidate"
+      />
     </div>
   </div>
 </template>
@@ -19,7 +23,12 @@
   import { Selection } from '@antv/x6-plugin-selection';
   import { getPortsByType, NodeType, registerNode } from '@/utils/node';
   import { Keyboard } from '@antv/x6-plugin-keyboard';
-  import { EpsilonGraph, saveRuleGraph, selectRuleGraph } from '@/api/rule';
+  import {
+    EpsilonGraph,
+    saveRuleGraph,
+    selectRuleGraph,
+    validateGraph,
+  } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
   import { generateUUID } from '@/utils/common';
   import NodePanel from '../node-panel/index.vue';
@@ -127,9 +136,7 @@
         });
       },
       getDropNode: (node) => {
-        const a = node.clone({ keepId: true });
-        console.log(a);
-        return a;
+        return node.clone({ keepId: true });
       },
     });
 
@@ -257,7 +264,7 @@
     graph.addEdges(edges);
   };
 
-  const handleSave = () => {
+  const getEpsilonGraph = (): EpsilonGraph => {
     const nodes = graph.getNodes().map((node) => {
       const position = node.getPosition();
       return {
@@ -278,13 +285,24 @@
         targetId: edge.getTargetCellId(),
       };
     });
-    const epsilonGraph: EpsilonGraph = {
+    return {
       ruleId: props.ruleMenu.ruleId,
       nodes,
       edges,
     };
+  };
+
+  const handleSave = () => {
+    const epsilonGraph = getEpsilonGraph();
     saveRuleGraph(epsilonGraph).then(() => {
       Message.success('保存成功！');
+    });
+  };
+
+  const handleValidate = () => {
+    const epsilonGraph = getEpsilonGraph();
+    validateGraph(epsilonGraph).then(() => {
+      Message.success('校验！');
     });
   };
 
@@ -320,7 +338,6 @@
     width: 100%;
     height: calc(100vh - 110px);
     overflow: hidden;
-    background: #8c78e6;
   }
 
   .app-stencil {

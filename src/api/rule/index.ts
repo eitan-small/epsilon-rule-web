@@ -54,6 +54,10 @@ function saveOrUpdate(rule: EpsilonRule) {
   return axios.post<RuleMenu>('/epsilon/rule/saveOrUpdate', rule);
 }
 
+function validateGraph(epsilonGraph: EpsilonGraph) {
+  return axios.post('/epsilon/rule/validate', epsilonGraph);
+}
+
 export {
   EpsilonNode,
   EpsilonEdge,
@@ -63,4 +67,5 @@ export {
   EpsilonRule,
   selectRule,
   saveOrUpdate,
+  validateGraph,
 };

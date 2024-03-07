@@ -6,7 +6,7 @@
       position="top"
       background-color="rgb(var(--arcoblue-5))"
     >
-      <a-button type="text" size="small" @click="emitRefresh">
+      <a-button type="text" @click="emitRefresh">
         <template #icon>
           <Icon name="icon-refresh" />
         </template>
@@ -18,7 +18,7 @@
       position="top"
       background-color="rgb(var(--arcoblue-5))"
     >
-      <a-button type="text" size="small" @click="emitGoBack">
+      <a-button type="text" @click="emitGoBack">
         <template #icon>
           <Icon name="icon-arrow-left" />
         </template>
@@ -30,7 +30,7 @@
       position="top"
       background-color="rgb(var(--arcoblue-5))"
     >
-      <a-button type="text" size="small" @click="emitGoForward">
+      <a-button type="text" @click="emitGoForward">
         <template #icon>
           <Icon name="icon-arrow-right" />
         </template>
@@ -42,9 +42,21 @@
       position="top"
       background-color="rgb(var(--arcoblue-5))"
     >
-      <a-button type="text" size="small" @click="emitSave">
+      <a-button type="text" @click="emitSave">
         <template #icon>
           <Icon name="icon-save" />
+        </template>
+      </a-button>
+    </a-tooltip>
+    <a-tooltip
+      content="校验"
+      mini
+      position="top"
+      background-color="rgb(var(--arcoblue-5))"
+    >
+      <a-button type="text" @click="emitValidate">
+        <template #icon>
+          <Icon name="icon-safe" />
         </template>
       </a-button>
     </a-tooltip>
@@ -60,13 +72,20 @@
   });
 
   // Define custom events
-  const emit = defineEmits(['refresh', 'goBack', 'goForward', 'save']);
+  const emit = defineEmits([
+    'refresh',
+    'goBack',
+    'goForward',
+    'save',
+    'validate',
+  ]);
 
   // Methods to emit events
   const emitRefresh = () => emit('refresh');
   const emitGoBack = () => emit('goBack');
   const emitGoForward = () => emit('goForward');
   const emitSave = () => emit('save');
+  const emitValidate = () => emit('validate');
 </script>
 
 <style scoped lang="less">
