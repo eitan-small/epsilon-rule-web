@@ -31,7 +31,6 @@
   } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
   import { generateUUID } from '@/utils/common';
-  import { Node } from '@antv/x6/src/model';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
 

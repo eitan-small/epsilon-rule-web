@@ -55,11 +55,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, inject, onMounted, ref } from 'vue';
+  import { inject, onMounted, ref } from 'vue';
   import { RuleMenu } from '@/api/rule-menu';
   import { EpsilonRule, saveOrUpdate, selectRule } from '@/api/rule';
   import { generateUUID } from '@/utils/common';
-  import { Message } from '@arco-design/web-vue';
+  import { Message, ValidatedError } from '@arco-design/web-vue';
 
   interface Props {
     ruleMenu: RuleMenu;
@@ -88,14 +88,14 @@
     values,
     errors,
   }: {
-    values: EpsilonRule;
-    errors: Record<string, any> | undefined;
+    values: Record<string, any>;
+    errors: Record<string, ValidatedError> | undefined;
   }) => {
     if (errors) {
       Message.warning('请按照提示填写完整！');
       return;
     }
-    saveOrUpdate(values).then((resp) => {
+    saveOrUpdate(values as EpsilonRule).then((resp) => {
       form.value.ruleId = resp.data.ruleId;
       Message.success('保存成功！');
       if (refreshMenu) {

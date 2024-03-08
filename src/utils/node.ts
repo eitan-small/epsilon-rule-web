@@ -1,5 +1,4 @@
 import { register } from '@antv/x6-vue-shape';
-import { PortManager } from '@antv/x6/src/model/port';
 
 import StartNode from '@/views/project/components/node/start-node/index.vue';
 import EndNode from '@/views/project/components/node/end-node/index.vue';
@@ -54,7 +53,7 @@ const groups = {
  * @param nodeId  节点 id
  */
 const getPortsByType = (type: NodeType, nodeId: string) => {
-  let ports: PortManager.PortMetadata[] = [];
+  let ports = [];
 
   switch (type) {
     case NodeType.STARTNODE:
