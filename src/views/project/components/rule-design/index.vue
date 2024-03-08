@@ -31,6 +31,7 @@
   } from '@/api/rule';
   import { Message } from '@arco-design/web-vue';
   import { generateUUID } from '@/utils/common';
+  import { Node } from '@antv/x6/src/model';
   import NodePanel from '../node-panel/index.vue';
   import RuleDesignTool from '../rule-design-tool/index.vue';
 
@@ -82,11 +83,28 @@
             },
           });
         },
-        validateConnection({ sourceMagnet, targetMagnet }) {
-          return (
-            sourceMagnet?.getAttribute('port-group') === 'out' &&
-            targetMagnet?.getAttribute('port-group') === 'in'
-          );
+        validateConnection({ sourceCell, sourceMagnet, targetMagnet }) {
+          // 基本的端口校验：确保连接是从输出端口到输入端口
+          if (
+            !(
+              sourceMagnet?.getAttribute('port-group') === 'out' &&
+              targetMagnet?.getAttribute('port-group') === 'in'
+            )
+          ) {
+            return false;
+          }
+
+          // 非 SWITCH_NODE 节点只允许有一条出口
+          const edges = graph
+            .getEdges()
+            .filter((edge) => edge.getSourceCell()?.id === sourceCell?.id);
+
+          if (sourceCell?.shape !== NodeType.SWITCHNODE && edges.length > 1) {
+            return false;
+          }
+
+          // 如果以上校验都通过，则允许连接
+          return true;
         },
       },
     });
