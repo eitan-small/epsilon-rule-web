@@ -319,7 +319,7 @@
   const handleValidate = () => {
     const epsilonGraph = getEpsilonGraph();
     validateGraph(epsilonGraph).then(() => {
-      Message.success('校验！');
+      Message.success('校验成功！');
     });
   };
 
