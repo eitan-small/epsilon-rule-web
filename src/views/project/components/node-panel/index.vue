@@ -25,14 +25,14 @@
             :style="{ alignItems: 'center', display: 'flex', gap: '8px' }"
           >
             <a-image width="20" :src="SwitchImage" :preview="false" />
-            <a-typography-text> 赋值运算节点 </a-typography-text>
+            <a-typography-text> 条件分支节点 </a-typography-text>
           </div>
           <div
             v-else-if="node.shape === 'calculate-node'"
             :style="{ alignItems: 'center', display: 'flex', gap: '8px' }"
           >
             <a-image width="20" :src="EditImage" :preview="false" />
-            <a-typography-text> 条件分支节点 </a-typography-text>
+            <a-typography-text> 赋值运算节点 </a-typography-text>
           </div>
           <a-typography-text copyable code>
             {{ node.id }}

@@ -50,6 +50,7 @@
             ref="treeRef"
             block-node
             draggable
+            :selected-keys="selectKeys"
             :data="treeData"
             :field-names="{ key: 'id', title: 'menuName' }"
             @select="onSelect"
@@ -128,6 +129,7 @@
           :editable="true"
           show-add-button
           auto-switch
+          @tab-click="handleTabClick"
           @add="handleAdd"
           @delete="handleDelete"
         >
@@ -181,6 +183,7 @@
 
   const searchKey = ref('');
   const treeRef = ref();
+  const selectKeys = ref<string[]>();
   const originTreeData = ref<RuleMenu[]>([]);
   const activeKey = ref<number>();
   const tabData = ref<RuleMenu[]>([]);
@@ -203,6 +206,10 @@
       tabData.value.push(tag);
     }
     activeKey.value = tag.id;
+  };
+
+  const handleTabClick = (key: number | string) => {
+    selectKeys.value = [key as string];
   };
 
   const handleAdd = () => {
