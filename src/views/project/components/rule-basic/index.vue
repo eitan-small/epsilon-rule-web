@@ -56,13 +56,13 @@
 
 <script setup lang="ts">
   import { inject, onMounted, ref } from 'vue';
-  import { RuleMenu } from '@/api/rule-menu';
+  import { EpsilonMenu } from 'src/api/epsilon-menu';
   import { EpsilonRule, saveOrUpdate, selectRule } from '@/api/rule';
   import { generateUUID } from '@/utils/common';
   import { Message, ValidatedError } from '@arco-design/web-vue';
 
   interface Props {
-    ruleMenu: RuleMenu;
+    ruleMenu: EpsilonMenu;
   }
 
   const props = defineProps<Props>();
@@ -76,7 +76,7 @@
     validated: false,
   });
 
-  const refreshMenu = inject<(ruleMenu: RuleMenu) => void>('refreshMenu');
+  const refreshMenu = inject<(ruleMenu: EpsilonMenu) => void>('refreshMenu');
 
   const fetchData = async () => {
     if (!props.ruleMenu.ruleId) return;

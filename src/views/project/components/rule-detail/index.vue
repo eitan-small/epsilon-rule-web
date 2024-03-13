@@ -15,12 +15,12 @@
 </template>
 
 <script setup lang="ts">
-  import { RuleMenu } from '@/api/rule-menu';
+  import { EpsilonMenu } from 'src/api/epsilon-menu';
   import RuleDesign from '../rule-design/index.vue';
   import RuleBasic from '../rule-basic/index.vue';
 
   interface Props {
-    ruleMenu: RuleMenu;
+    ruleMenu: EpsilonMenu;
   }
 
   withDefaults(defineProps<Props>(), {});

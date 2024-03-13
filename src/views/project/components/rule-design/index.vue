@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import { RuleMenu } from '@/api/rule-menu';
+  import { EpsilonMenu } from 'src/api/epsilon-menu';
   import { Graph } from '@antv/x6';
   import { onMounted, ref } from 'vue';
   import { Stencil } from '@antv/x6-plugin-stencil';
@@ -35,7 +35,7 @@
   import RuleDesignTool from '../rule-design-tool/index.vue';
 
   interface Props {
-    ruleMenu: RuleMenu;
+    ruleMenu: EpsilonMenu;
     showStencil?: boolean;
   }
 

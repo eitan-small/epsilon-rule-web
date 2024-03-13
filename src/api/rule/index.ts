@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RuleMenu } from '@/api/rule-menu';
+import { EpsilonMenu } from 'src/api/epsilon-menu';
 
 interface EpsilonNode {
   nodeId: string;
@@ -51,7 +51,7 @@ function selectRule(ruleId: number) {
 }
 
 function saveOrUpdate(rule: EpsilonRule) {
-  return axios.post<RuleMenu>('/epsilon/rule/saveOrUpdate', rule);
+  return axios.post<EpsilonMenu>('/epsilon/rule/saveOrUpdate', rule);
 }
 
 function validateGraph(epsilonGraph: EpsilonGraph) {

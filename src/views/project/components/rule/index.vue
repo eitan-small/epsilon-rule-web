@@ -173,8 +173,12 @@
   import Icon from '@/components/icon/index.vue';
   import { computed, provide, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import { RuleMenu, selectRuleMenuTree } from '@/api/rule-menu';
   import { TreeNodeData } from '@arco-design/web-vue';
+  import {
+    EpsilonMenu,
+    MenuCategory,
+    selectEpsilonMenuTree,
+  } from '@/api/epsilon-menu';
   import SplitPanel from '../split-panel/index.vue';
   import RuleDetail from '../rule-detail/index.vue';
 
@@ -184,18 +188,18 @@
   const searchKey = ref('');
   const treeRef = ref();
   const selectKeys = ref<string[]>();
-  const originTreeData = ref<RuleMenu[]>([]);
+  const originTreeData = ref<EpsilonMenu[]>([]);
   const activeKey = ref<number>();
-  const tabData = ref<RuleMenu[]>([]);
+  const tabData = ref<EpsilonMenu[]>([]);
 
   const fetchData = async (id: number) => {
-    const response = await selectRuleMenuTree(id);
+    const response = await selectEpsilonMenuTree(id, MenuCategory.RuleMenu);
     originTreeData.value = response.data;
   };
 
   fetchData(projectId);
 
-  const addTag = (tag: RuleMenu) => {
+  const addTag = (tag: EpsilonMenu) => {
     // 判断标签是否已存在
     const idExisting = tabData.value.find(
       (existingTag) => existingTag.id === tag.id,
@@ -217,7 +221,7 @@
       id: Date.now(),
       projectId,
       menuName: '新建规则',
-    } as RuleMenu;
+    } as EpsilonMenu;
     addTag(tag);
   };
   const handleDelete = (key: number | string) => {
@@ -229,8 +233,8 @@
   };
 
   const searchData = (keyword: string) => {
-    const loop = (data: RuleMenu[]) => {
-      const result: RuleMenu[] = [];
+    const loop = (data: EpsilonMenu[]) => {
+      const result: EpsilonMenu[] = [];
       data.forEach((item) => {
         if (item.menuName.toLowerCase().indexOf(keyword.toLowerCase()) > -1) {
           result.push({ ...item });
@@ -271,11 +275,11 @@
     },
   ) => {
     // 展开文件夹节点
-    const node = data.node as RuleMenu;
+    const node = data.node as EpsilonMenu;
     if (node.menuType === '1') {
       const expandedNodes = treeRef.value
         .getExpandedNodes()
-        .map((item: RuleMenu) => {
+        .map((item: EpsilonMenu) => {
           return item.id;
         });
       treeRef.value.expandNode(
@@ -288,7 +292,7 @@
     }
   };
 
-  const refreshActiveTab = (ruleMenu: RuleMenu) => {
+  const refreshActiveTab = (ruleMenu: EpsilonMenu) => {
     const tabIndex = tabData.value.findIndex(
       (tab) => tab.id === activeKey.value,
     );
@@ -298,7 +302,7 @@
     }
   };
 
-  provide('refreshMenu', (ruleMenu: RuleMenu) => {
+  provide('refreshMenu', (ruleMenu: EpsilonMenu) => {
     fetchData(projectId);
     refreshActiveTab(ruleMenu);
   });
