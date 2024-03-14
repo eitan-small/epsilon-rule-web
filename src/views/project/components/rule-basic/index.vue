@@ -67,7 +67,7 @@
 
   const props = defineProps<Props>();
   const form = ref<EpsilonRule>({
-    ruleId: props.ruleMenu.ruleId,
+    ruleId: props.ruleMenu.associateId,
     projectId: props.ruleMenu.projectId,
     menuName: props.ruleMenu.menuName,
     chainName: generateUUID(),
@@ -79,8 +79,8 @@
   const refreshMenu = inject<(ruleMenu: EpsilonMenu) => void>('refreshMenu');
 
   const fetchData = async () => {
-    if (!props.ruleMenu.ruleId) return;
-    const resp = await selectRule(props.ruleMenu.ruleId);
+    if (!props.ruleMenu.associateId) return;
+    const resp = await selectRule(props.ruleMenu.associateId);
     form.value = resp.data;
   };
 

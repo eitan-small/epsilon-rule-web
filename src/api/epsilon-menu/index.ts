@@ -5,7 +5,7 @@ export interface EpsilonMenu {
   projectId: number;
   menuName: string;
   menuType: string;
-  ruleId: number;
+  associateId: number;
   parentId?: number;
   children?: EpsilonMenu[];
 }

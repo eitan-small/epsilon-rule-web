@@ -236,12 +236,12 @@
   };
 
   const ruleChainInit = async () => {
-    if (!props.ruleMenu.ruleId) {
+    if (!props.ruleMenu.associateId) {
       return;
     }
 
     // 获取规则链信息
-    const response = await selectRuleGraph(props.ruleMenu.ruleId);
+    const response = await selectRuleGraph(props.ruleMenu.associateId);
     const epsilonGraph = response.data;
     const nodes = epsilonGraph.nodes.map((node) => {
       return {
@@ -286,7 +286,7 @@
       const position = node.getPosition();
       return {
         nodeId: node.id,
-        ruleId: props.ruleMenu.ruleId,
+        ruleId: props.ruleMenu.associateId,
         shape: node.shape,
         label: node.getData().label,
         positionX: position.x,
@@ -297,13 +297,13 @@
     const edges = graph.getEdges().map((edge) => {
       return {
         edgeId: edge.id,
-        ruleId: props.ruleMenu.ruleId,
+        ruleId: props.ruleMenu.associateId,
         sourceId: edge.getSourceCellId(),
         targetId: edge.getTargetCellId(),
       };
     });
     return {
-      ruleId: props.ruleMenu.ruleId,
+      ruleId: props.ruleMenu.associateId,
       nodes,
       edges,
     };
