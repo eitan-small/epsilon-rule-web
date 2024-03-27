@@ -61,7 +61,7 @@
   import RuleSetting from './components/rule/index.vue';
 
   const iconName = ref('Pokemon');
-  const activeTab = ref('ModelManagement');
+  const activeTab = ref('RuleSetting');
 
   const componentMap: any = {
     ModelManagement,

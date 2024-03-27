@@ -150,7 +150,7 @@
               </a-typography-paragraph>
             </template>
             <div class="rule-panel">
-              <RuleDetail :rule-menu="item" />
+              <ModelDetail :rule-menu="item" />
             </div>
           </a-tab-pane>
           <div class="rule-panel">
@@ -180,7 +180,7 @@
   } from '@/api/epsilon-menu';
   import { TreeNodeData } from '@arco-design/web-vue';
   import SplitPanel from '../split-panel/index.vue';
-  import RuleDetail from '../rule-detail/index.vue';
+  import ModelDetail from '../model-detail/indx.vue';
 
   const route = useRoute();
   const projectId = parseInt(route.params.id as string, 10);
