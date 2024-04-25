@@ -96,7 +96,7 @@
       return;
     }
     saveOrUpdate(values as EpsilonRule).then((resp) => {
-      form.value.ruleId = resp.data.ruleId;
+      form.value.ruleId = resp.data.id;
       Message.success('保存成功！');
       if (refreshMenu) {
         refreshMenu(resp.data);

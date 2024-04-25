@@ -37,7 +37,7 @@
           </a-input>
           <div class="add-container">
             <a-popover position="bl">
-              <a-button>
+              <a-button type="primary">
                 <template #icon>
                   <Icon name="icon-plus" :svg-style="{ color: 'white' }" />
                 </template>
@@ -343,7 +343,6 @@
     height: 32px;
 
     :deep(.arco-btn) {
-      background-color: var(--activate-tab-color);
       border-radius: var(--border-radius-medium);
     }
   }

@@ -35,6 +35,9 @@ export default defineConfig({
       less: {
         additionalData: `@import "@/assets/style/variable.less";`,
         javascriptEnabled: true,
+        modifyVars: {
+          'arcoblue-6': '#9373ee',
+        },
       },
     },
   },
