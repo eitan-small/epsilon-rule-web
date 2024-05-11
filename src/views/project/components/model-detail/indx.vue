@@ -13,10 +13,15 @@
         show-word-limit
       />
     </div>
+    <div class="detail-editor">
+      <JsonSchemaEditor />
+    </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import JsonSchemaEditor from '@/components/json-schema-editor/index.vue';
+</script>
 
 <style scoped lang="less">
   .detail-container {
@@ -59,6 +64,20 @@
 
     :deep(.arco-textarea-wrapper) {
       background: white;
+      border-radius: var(--border-radius-medium);
+
+      &:hover {
+        border: 1px solid var(--color-neutral-3);
+      }
+
+      &:focus-within {
+        border: 1px solid var(--activate-tab-color);
+        outline: none;
+      }
     }
+  }
+
+  .detail-editor {
+    padding: 10px;
   }
 </style>
